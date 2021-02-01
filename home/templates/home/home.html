@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+<div id="content" name="content">
+{% block content %}
+    <img class="picture" src="static/images/research.jpg" alt="research">
+    <h1 class="discover">
+        Discover your favourite<br> publications from the world<br> of
+        science and stay connect!
+    </h1>
+    <br>
+    <nav class="joining2">
+        <a class="reg" href={% url 'register' %}><button class="joining">Join for free</button></a>
+    </nav>
+    <br>
+    <h4>
+        You already have an account? Just <a href={% url 'login' %}><span class="sign">sign in!</span></a>
+    </h4>
+{% endblock content %}
+</div>

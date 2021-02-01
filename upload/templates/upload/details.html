@@ -1,0 +1,73 @@
+{% extends 'base3.html' %}
+
+{% block title%}{{ upload }}{% endblock %}
+
+{% block content%}
+<h3>{{ post.Title }}</h3>
+
+
+  <h3>{{ post.Issn }}</h3>
+  <h1>{{ post.description }}</h1>
+    <figure class="image is-100x50">
+      <img src="https://api.elsevier.com/content/serial/title/issn/{{ post.Issn }}?view=coverimage" alt="Image" style="width: 300px;">
+    </figure>
+
+  {% if request.user.is_authenticated %}
+  <form action="{% url 'upload:like_public' %}" method="post">
+    {% csrf_token %}
+    {% if is_liked %}
+      <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger">Unlike</button> {{ total_likes }}
+    {% else %}
+      <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-success">Like</button>  {{ total_likes }}
+    {% endif %}
+  </form>
+  {% endif %}
+
+<div class="issns" >
+    <h5><span class="sign"><strong>Publisher:</strong></span> {{ issn_details.dc_publisher }}</h5>
+    <br>
+    <h5><span class="sign"><strong>Start cover:</strong></span> {{ issn_details.startcover }}</h5>
+    <br>
+    <h5><span class="sign"><strong>End cover:</strong></span> {{ issn_details.endcover }}</h5>
+    <br>
+  {% if issn_details.subjectarea == issn_details.subjectarea1 %}
+    <h5><span class="sign"><strong>Subject area:</strong></span> {{ issn_details.subjectarea }}</h5>
+    <br>
+  {% else %}
+    <h5><span class="sign"><strong>Subject area:</strong></span>  <span class="aligned">{{ issn_details.subjectarea }} {{ issn_details.subjectarea1 }}</span></h5>
+    <br>
+  {% endif %}
+   <h5><span class="sign"><strong>More info:</strong></span>check this <a href= 'https://www.journals.elsevier.com/{{ post.slug }}'><strong class="for">website</strong></a></h5>
+
+</div>
+
+
+
+  <br><br>
+  <hr>
+
+
+  <div class="main-comment-section">
+    {{ comments.count }} Comment{{ comments|pluralize }}
+    {% for comment in comments %}
+     <blockquote class="blockquote">
+       <p class="mb-0">{{ comment.body }}</p>
+     <footer class="blockquote-footer">by <cite title="Source Title">{{ comment.user|capfirst }}
+     {{ comment.created }}</cite></footer>
+     </blockquote>
+    {% empty %}
+      <p>There is no comments yet.</p>
+   {% endfor %}
+  </div>
+
+
+    <form method="post">
+      {{ comment_form.as_p }}
+      {% csrf_token %}
+      {% if request.user.is_authenticated %}
+        <p><input type="Submit" value="Submit"></p>
+      {% else %}
+        <p><input type="Submit" value="Submit" disabled></p>
+      {% endif %}
+  </form>
+{% endblock %}
